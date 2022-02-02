@@ -1,0 +1,15 @@
+[Unit]
+Description=Collect Temperature Hygrometry and Pressure from sensehat
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/fakesonde/sensehat/
+ExecStart=/usr/bin/python3 /home/pi/fakesonde/sensehat/tph.py
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target

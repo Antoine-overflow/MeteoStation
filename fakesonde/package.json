@@ -1,0 +1,14 @@
+{
+  "name": "fakeSonde",
+  "version": "1.0.1",
+  "description": "Node.js fake data for Weather simulation",
+  "author": "cedricici <cedric.esnault@cedricici.eu>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "js-yaml": "^3.10.0"
+  }
+}

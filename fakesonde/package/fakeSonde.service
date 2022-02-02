@@ -1,0 +1,10 @@
+[Unit]
+Description=weather fake data generator
+
+[Service]
+WorkingDirectory=/home/pi/fakesonde
+#ExecStartPre=/usr/bin/npm install
+ExecStart=/usr/bin/npm start
+
+[Install]
+WantedBy=multi-user.target

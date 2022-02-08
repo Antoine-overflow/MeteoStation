@@ -5,7 +5,7 @@ We follow these instructions : https://ensg_dei.gitlab.io/web-az/js/exercices/pr
 
 Before running our application you must have docker and run the following line : 
 ``` bash
-docker run -ti -p 8086:8086 -v influxdb:/var/lib/influxdb --name influxdb influxdb:1.8 bash
+docker run -ti -p 8086:8086 -v influxdb:/var/lib/influxdb --name influxdb influxdb:1.8
 ```
 
 Open a new terminal and run : 

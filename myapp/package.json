@@ -6,12 +6,15 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "consolidate": "^0.16.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "fixed": "^0.3.1",
     "http-errors": "~1.6.3",
     "mongodb": "^4.3.1",
     "morgan": "~1.9.1",
+    "mustache": "^4.2.0",
     "pug": "2.0.0-beta11"
   }
 }

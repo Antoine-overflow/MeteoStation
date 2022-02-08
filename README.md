@@ -9,7 +9,7 @@ docker pull influxdb
 docker run -ti -p 8086:8086 -v influxdb:/var/lib/influxdb influxdb:1.8 bash
 
 # You are in the bash of influxdb 
-root@56663630a44b:/# CREATE DATABASE meteodb
+root@56663630a44b:/ CREATE DATABASE meteodb
 ```
 
 You now have the database for the project.

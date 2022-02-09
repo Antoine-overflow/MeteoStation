@@ -262,6 +262,3 @@ module.exports = {
 * Main process
 */
 loop()
-
-
-

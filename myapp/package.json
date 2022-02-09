@@ -12,6 +12,7 @@
     "express": "~4.16.1",
     "fixed": "^0.3.1",
     "http-errors": "~1.6.3",
+    "influx": "^5.9.2",
     "mongodb": "^4.3.1",
     "morgan": "~1.9.1",
     "mustache": "^4.2.0",

@@ -4,7 +4,8 @@ function initMap(station_adress) {
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
         tileSize: 512,
-        zoomOffset: -1
+        zoomOffset: -1,
+        detectRetina: true
     }).addTo(map);
 }
 
@@ -24,7 +25,6 @@ function updateRealTimeData(station_adress){
         c_pressure.innerText = Math.floor(t[t.length - 1].pressure) + "hPa";
         c_wind.innerText = Math.floor(t[t.length - 1].wind_speed_avg) + "K/s";
         i_wind.style.transform = "rotate("+Math.floor(t[t.length - 1].wind_heading)+"deg)";
-        console.log("rotate("+Math.floor(t[t.length - 1].wind_heading)+"deg)");
 
         setTimeout(function(){
             updateRealTimeData(station_adress)
@@ -34,9 +34,101 @@ function updateRealTimeData(station_adress){
 
 }
 
+function drawBigGraphic(station_adress){
+    // get period
+    var period = {};
+    document.querySelectorAll(".select-temporaly-big-graph").forEach(element => {
+        if (element.checked) {
+            period.request = element.value;
+        }
+    });
+
+    // remove canvas
+    document.getElementById('big-station-graph').remove();
+    document.getElementById('graph-div').innerHTML = "<canvas id='big-station-graph'></canvas>"
+    // get the data
+    fetch("http://"+station_adress+"/data/").then(d => d.json()).then(d => {
+        // TAke all the date
+        const date = [];
+        const temperature = [];
+        const humidity = [];
+        const luminosity = [];
+        const pressure = [];
+
+        // Put prettier value in array
+        d.forEach(m => {
+            date.push(m.time);
+            temperature.push(m.temperature);
+            humidity.push(m.humidity);
+            luminosity.push(m.luminosity);
+            pressure.push(m.pressure);
+        });
+        
+
+        const temperature_dataset = {
+            label: "Temperature (°C)",
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: temperature
+        }
+
+        const humidity_dataset = {
+            label: "Humidity (%)",
+            backgroundColor: 'rgb(98, 209, 43)',
+            borderColor: 'rgb(98,209,43)',
+            data: humidity
+        }
+
+        const luminosity_dataset = {
+            label: "Luminosity (Lux)",
+            backgroundColor: 'rgb(255,182,77)',
+            borderColor: 'rgb(255,182,77)',
+            data: luminosity
+        }
+
+        const pressure_dataset = {
+            label: "Pressure (hPa)",
+            backgroundColor: 'rgb(38,218,210)',
+            borderColor: 'rgb(38,218,210)',
+            data: pressure
+        }
+
+        const data = {
+            labels: date,
+            datasets: [temperature_dataset, humidity_dataset, luminosity_dataset, pressure_dataset]
+        }
+        
+          const config = {
+            type: 'line',
+            data: data,
+            options: {}
+          };
+
+          const myChart = new Chart(
+            document.getElementById('big-station-graph'),
+            config
+          );
+    });
+}
+
+function manageTimePeriod(station_adress){
+    document.querySelectorAll('.select-temporaly-big-graph').forEach(b => {
+        b.addEventListener("click", e => {
+            document.querySelectorAll('.select-temporaly-big-graph').forEach(radio => {
+                radio.checked = false;
+            });
+            e.currentTarget.checked = true;
+            drawBigGraphic(station_adress);
+        });
+    });
+}
+
+
 function loadPageStation(station_adress){
     initMap(station_adress);
     updateRealTimeData(station_adress);
+    drawBigGraphic(station_adress, "All");
+    manageTimePeriod(station_adress);
 }
 
 loadPageStation("localhost:3000")

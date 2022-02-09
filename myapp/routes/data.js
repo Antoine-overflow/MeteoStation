@@ -3,20 +3,13 @@ var router = express.Router();
 var Influx = require('influx');
 
 router.get('/', function(req, res, next) {
-    var influx = createInflux();
-    influx.query('select * from piensg30').then(result => {
-        res.send(result);
-      }).catch(err => {
-        res.status(500).send(err.stack)
-      });
+   res.render('API_documentation.html');
 });
 
 router.get('/:measure', function(req, res, next) {
     var measure = req.params.measure;
-    console.log(measure);
-    // var measures = measure.split(',');
     var influx = createInflux();
-    influx.query('select '+measure+' from piensg30').then(result => {
+    influx.query('select * from '+measure+' order by time desc LIMIT 1').then(result => {
         res.send(result);
       }).catch(err => {
         res.status(500).send(err.stack)
@@ -28,12 +21,17 @@ router.get('/:measure/:date', function(req, res, next) {
     console.log(measure);
     var date = req.params.date;
     console.log(date);
-    var influx = createInflux();
-    influx.query('select '+measure+' from piensg30').then(result => {
-        res.send(result);
-      }).catch(err => {
-        res.status(500).send(err.stack)
-      });
+    // parsedDate = date.parse(',');
+    // if(parsedDate.length == 1){
+    //     date = new Date(date);
+    //     console.log(date);
+    //     var influx = createInflux();
+    //     influx.query('select '+measure+' from piensg30 where time').then(result => {
+    //         res.send(result);
+    //     }).catch(err => {
+    //         res.status(500).send(err.stack)
+    //   });
+    // }
 });
 
 function createInflux(){

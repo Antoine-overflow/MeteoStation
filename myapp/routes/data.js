@@ -21,18 +21,34 @@ router.get('/:measure/:date', function(req, res, next) {
     console.log(measure);
     var date = req.params.date;
     console.log(date);
-    // parsedDate = date.parse(',');
-    // if(parsedDate.length == 1){
-    //     date = new Date(date);
-    //     console.log(date);
-    //     var influx = createInflux();
-    //     influx.query('select '+measure+' from piensg30 where time').then(result => {
-    //         res.send(result);
-    //     }).catch(err => {
-    //         res.status(500).send(err.stack)
-    //   });
-    // }
+    var influx = createInflux();
+    if(date.split(",").length > 1){
+        console.log("pas normal");
+
+        influx.query('select * from '+measure+' where time between'+date.split(",")[0]+' and '+date.split(",")[1]).then(result => {
+            res.send(result);
+        }).catch(err => {
+            res.status(500).send(err.stack)
+        });
+    }else if(date.split(",").length == 1){
+        console.log("Normal");
+        influx.query('select * from '+measure+' where time>'+date).then(result => {
+            res.send(result);
+        }).catch(err => {
+            res.status(500).send(err.stack)
+        });
+    }
 });
+
+// router.get('/:measure//startingDate', function(req, res, next) {
+//     var measure = req.params.measure;
+//     var influx = createInflux();
+//     influx.query('select date from '+measure+' order by time LIMIT 1').then(result => {
+//         res.send(result);
+//       }).catch(err => {
+//         res.status(500).send(err.stack)
+//       });
+// });
 
 function createInflux(){
     const influx = new Influx.InfluxDB({

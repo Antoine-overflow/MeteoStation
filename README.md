@@ -19,11 +19,24 @@ influx
 CREATE DATABASE meteodb
 ```
 
-You now have the database for the project.
+You now have the database for the project. But, the database is empty and tu fulfill it you just have to run the following lines : 
+(make sure that you have node installed on your computer)
+
+``` bash
+git clone https://github.com/Antoine-overflow/MeteoStation.git
+cd MeteoStation/fakesonde
+node server.js
+``` 
+
+Open a new terminal and go in the project folder and run : 
+```bash
+node server.js
+```
+
+Now you all is set. You just have to run the application.
 
 To run the application run the following lines : 
 ``` bash
-git clone https://github.com/Antoine-overflow/MeteoStation.git
-cd MeteoStation/myapp
+cd myapp
 DEBUG=myapp:* npm start
 ``` 

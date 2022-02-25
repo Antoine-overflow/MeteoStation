@@ -23,24 +23,20 @@ router.get('/:measure', function(req, res, next) {
     influx.query('select * from '+measure+' order by time desc LIMIT 1').then(result => {
         var a = {};
         for(var i = 0; i<listParam.length;i++){
-            if(listParam[i]=='gpsposition'){
-                console.log("gps");
+            if(result.groupRows[i].name=='gpsposition'){
                 a[result.groupRows[i].name] = {};
                 a[result.groupRows[i].name].value = [result[i].lat, result[i].lon, result[i].alt];
                 a[result.groupRows[i].name].date = result[i].date;
-            }else if(listParam[i]=='wind'){
-                console.log("wind");
+            }else if(result.groupRows[i].name=='wind'){
                 a[result.groupRows[i].name] = {};
                 a[result.groupRows[i].name].value = [result[i].wind_avg, result[i].wind_min, result[i].wind_max];
                 a[result.groupRows[i].name].date = result[i].date;
             }else{
-                console.log("else");
                 a[result.groupRows[i].name] = {};
-                a[result.groupRows[i].name].value = result[i].value;
+                a[result.groupRows[i].name].value = [result[i].value];
                 a[result.groupRows[i].name].date = result[i].date;
             }
-            console.log(i);
-        }
+        }        
         res.send(a);
       }).catch(err => {
         res.status(500).send(err.stack)

@@ -7,6 +7,14 @@ function initMap(station_adress) {
         zoomOffset: -1,
         detectRetina: true
     }).addTo(map);
+
+    // Add a marker where the station is
+    fetch("http://" + station_adress + "/data/gpsposition").then(g => g.json()).then(g => {
+        let marker = L.marker([g.gpsposition.value[0],g.gpsposition.value[1]]).addTo(map);
+        marker.bindPopup("<b>Station Météo X</b><br>Adress: " + station_adress + "</br><br>Coords: "+g.gpsposition.value[0]+" , " + g.gpsposition.value[1]+"</br>");
+
+        map.setView([g.gpsposition.value[0],g.gpsposition.value[1]], 10);
+    });
 }
 
 
@@ -19,12 +27,12 @@ function updateRealTimeData(station_adress){
     var i_wind = document.getElementById("direction_wind_in_real_time_img");
 
     // Get the data
-    fetch("http://"+station_adress+"/data/temperature,humidity,pressure,wind_speed_avg,wind_heading").then(t => t.json()).then(t => {
-        c_temperature.innerText = t[t.length - 1].temperature + "°C";
-        c_humidity.innerText = t[t.length - 1].humidity + "%";
-        c_pressure.innerText = Math.floor(t[t.length - 1].pressure) + "hPa";
-        c_wind.innerText = Math.floor(t[t.length - 1].wind_speed_avg) + "K/s";
-        i_wind.style.transform = "rotate("+Math.floor(t[t.length - 1].wind_heading)+"deg)";
+    fetch("http://"+station_adress+"/data/temperature,humidity,wind,pressure,wind_heading").then(t => t.json()).then(t => {
+        c_temperature.innerText = t.temperature.value[0] + "°C";
+        c_humidity.innerText = t.humidity.value[0] + "%";
+        c_pressure.innerText = Math.floor(t.pressure.value[0]) + "hPa";
+        c_wind.innerText = Math.floor(t.wind.value[0]) + "K/s";
+        i_wind.style.transform = "rotate("+Math.floor(t.wind_heading.value[0])+"deg)";
 
         setTimeout(function(){
             updateRealTimeData(station_adress)
@@ -46,22 +54,59 @@ function drawBigGraphic(station_adress){
     // remove canvas
     document.getElementById('big-station-graph').remove();
     document.getElementById('graph-div').innerHTML = "<canvas id='big-station-graph'></canvas>"
+    
+    // Get the date
+    let now = new Date().toISOString();
+    let delta = "2022-03-05T15:54:31.069Z";
+    if (period.request == "All"){
+        delta = new Date("2022-03-05T15:54:31.069Z").toISOString();
+    }
+
+    if (period.request == "Month") {
+        delta = new Date();
+        delta.setDate(delta.getDate() - 31);
+        delta = delta.toISOString();
+    }
+
+    if (period.request == "Week") {
+        delta = new Date();
+        delta.setDate(delta.getDate() - 7);
+        delta = delta.toISOString();
+    }
+
+    if (period.request == "Day") {
+        delta = new Date();
+        delta.setDate(delta.getDate() - 1);
+        delta = delta.toISOString();
+    }
+
+    // get the measure
+    let measures = [];
+    document.querySelectorAll(".select-data-big-graph").forEach(element => {
+        if (element.checked) {
+            measures.push(element.value);
+        }
+    })
+    
+
     // get the data
-    fetch("http://"+station_adress+"/data/").then(d => d.json()).then(d => {
+    fetch("http://"+station_adress+"/data/"+measures.join(",")+"/" + delta).then(d => d.json()).then(d => {
         // TAke all the date
         const date = [];
-        const temperature = [];
-        const humidity = [];
-        const luminosity = [];
-        const pressure = [];
+        const data_measures = {
+            "temperature":[],
+            "humidity":[],
+            "luminosity":[],
+            "pressure":[],
+            "wind":[]
+        };
 
         // Put prettier value in array
         d.forEach(m => {
-            date.push(m.time);
-            temperature.push(m.temperature);
-            humidity.push(m.humidity);
-            luminosity.push(m.luminosity);
-            pressure.push(m.pressure);
+            date.push(m[measures[0]].date);
+            measures.forEach(type => {
+                data_measures[type].push(m[type].value[0]);
+            });
         });
         
 
@@ -69,33 +114,59 @@ function drawBigGraphic(station_adress){
             label: "Temperature (°C)",
             backgroundColor: 'rgb(255, 99, 132)',
             borderColor: 'rgb(255, 99, 132)',
-            data: temperature
+            data: data_measures["temperature"]
         }
 
         const humidity_dataset = {
             label: "Humidity (%)",
             backgroundColor: 'rgb(98, 209, 43)',
             borderColor: 'rgb(98,209,43)',
-            data: humidity
+            data: data_measures["humidity"]
         }
 
         const luminosity_dataset = {
             label: "Luminosity (Lux)",
             backgroundColor: 'rgb(255,182,77)',
             borderColor: 'rgb(255,182,77)',
-            data: luminosity
+            data: data_measures["luminosity"]
         }
 
         const pressure_dataset = {
             label: "Pressure (hPa)",
             backgroundColor: 'rgb(38,218,210)',
             borderColor: 'rgb(38,218,210)',
-            data: pressure
+            data: data_measures["pressure"]
         }
+
+        const wind_dataset = {
+            label: "Wind speed K/s",
+            backgroundColor: 'rgb(180,180,180)',
+            borderColor: 'rgb(180,180,180)',
+            data: data_measures["wind"]
+        }
+
+        let datasets = [];
+        measures.forEach(m => {
+            if (m == "temperature") {
+                datasets.push(temperature_dataset);
+            }
+            if (m == "humidity") {
+                datasets.push(humidity_dataset);
+            }
+            if (m == "luminosity") {
+                datasets.push(luminosity_dataset);
+            }
+            if (m == "pressure") {
+                datasets.push(pressure_dataset);
+            }
+            if (m == "wind") {
+                datasets.push(wind_dataset);
+            }
+        })
 
         const data = {
             labels: date,
-            datasets: [temperature_dataset, humidity_dataset, luminosity_dataset, pressure_dataset]
+            datasets: datasets
         }
         
           const config = {
@@ -123,12 +194,21 @@ function manageTimePeriod(station_adress){
     });
 }
 
+function manageDataGraph(station_adress){
+    document.querySelectorAll('.select-data-big-graph').forEach(b => {
+        b.addEventListener('click', e => {
+            drawBigGraphic(station_adress);
+        });
+    });
+}
+
 
 function loadPageStation(station_adress){
     initMap(station_adress);
     updateRealTimeData(station_adress);
-    drawBigGraphic(station_adress, "All");
+    drawBigGraphic(station_adress);
     manageTimePeriod(station_adress);
+    manageDataGraph(station_adress);
 }
 
 loadPageStation("localhost:3000")

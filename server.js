@@ -90,6 +90,7 @@ function loop(){
     Promise.all(promises).then(promises => {
         console.log('.');
         setTimeout(loop, 1000);
+        console.log(promises[0].date)
         influx.writePoints([
             {
                 measurement: "temperature",

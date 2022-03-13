@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Meteo Central</title>
+
+    <!-- Style sheets -->
+    <link href="styles/main.css" rel="stylesheet">
+
+    <!-- Scripts vuejs -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+
+    <!-- Other scripts -->
+    <script src="scripts/responsive.js" defer></script>
+    <script src="scripts/home.js"></script>
+    <script src="scripts/stations.js"></script>
+    <script src="scripts/map.js"></script>
+    <script src="scripts/compare.js"></script>
+</head>
+
+<body>
+    <header id="header">
+        <img v-bind:src="path_logo">
+        <div>
+            <p>{{date}}</p>
+        </div>
+    </header>
+    <div id="main">
+        <div id="pannel" v-bind:class="width_style">
+            <pannel-button class="pannel-button" v-for="button in list_button" v-bind:todo="button"
+                v-bind:key="button.id"></pannel-button>
+        </div>
+        <div id="dash">
+
+        </div>
+    </div>
+
+    <script src="scripts/app.js"></script>
+</body>

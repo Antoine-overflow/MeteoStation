@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var engines = require('consolidate');
+var cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -11,6 +12,13 @@ var stationsRouter = require('./routes/stations');
 var dataRouter = require('./routes/data');
 
 var app = express();
+
+var corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200 // For legacy browser support
+}
+
+app.use(cors(corsOptions));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

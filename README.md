@@ -40,3 +40,17 @@ To run the application run the following lines :
 cd myapp
 DEBUG=myapp:* npm start
 ``` 
+# MeteoCentral
+
+## Installation
+```bash
+cd central
+npm install
+```
+
+## Run
+```bash
+
+```
+
+Go to [http://localhost:8080](http://localhost:8080)

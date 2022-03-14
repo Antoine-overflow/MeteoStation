@@ -51,7 +51,7 @@ ln -s <PATH TO ./central Folder> /var/www/html
 ```
 
 ## Run
-Go to [http://localhost:8080](http://localhost/central)
+Go to [http://localhost/central](http://localhost/central)
 
 ## Add station
 Open the dev tool in your internet explorer, then open the console and you can add meteo station with this command:

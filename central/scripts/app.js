@@ -104,3 +104,5 @@ pannel.makeClickable();
  const STATIONS = [
     {name: "Station locale", adresse: "localhost:3000"}
  ];
+
+ var ADRESS = "";

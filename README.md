@@ -43,14 +43,19 @@ DEBUG=myapp:* npm start
 # MeteoCentral
 
 ## Installation
+
+Require apache2 server
+
 ```bash
-cd central
-npm install
+ln -s <PATH TO ./central Folder> /var/www/html
 ```
 
 ## Run
-```bash
+Go to [http://localhost:8080](http://localhost:8080)
+
+## Add station
+Open the dev tool in your internet explorer, then open the console and you can add meteo station with this command:
 
 ```
-
-Go to [http://localhost:8080](http://localhost:8080)
+STATIONS.push({name: <NOM DE LA STATION>, adresse: <ADRESSE DE LA STATION>});
+```
